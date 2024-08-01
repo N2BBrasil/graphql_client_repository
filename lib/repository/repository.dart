@@ -1,9 +1,9 @@
-import 'package:graphql_client_repository/client.config.dart';
+import 'package:graphql/client.dart';
 
 export 'resolvers/resolvers.dart';
 
 abstract class GraphQLRepository {
   GraphQLRepository(this.client);
 
-  final GraphQLRepositoryClient client;
+  final GraphQLClient client;
 }
