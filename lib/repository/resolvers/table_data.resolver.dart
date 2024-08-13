@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:graphql_client_repository/graphql_client_repository.dart';
 
-mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
-    on GraphQLRepository {
+mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model> on GraphQLRepository {
   String get table;
 
   Iterable<String> get attributes;
@@ -16,10 +15,11 @@ mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
 
   void beforeCreate(Map<String, dynamic> json) {}
 
+  void beforeUpdate(Map<String, dynamic> json) {}
+
   List<T> parseList<T>(dynamic data) {
-    return data
-        .map<T>((dynamic model) => encode(model as Map<String, dynamic>))
-        .toList() as List<T>;
+    return data.map<T>((dynamic model) => encode(model as Map<String, dynamic>)).toList()
+        as List<T>;
   }
 
   Future<bool> delete(
@@ -89,6 +89,7 @@ mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
     GraphQLCacheRereadPolicy? cacheRereadPolicy,
   }) async {
     final json = decode(model);
+    beforeUpdate(json);
 
     assert(
       json['id'] != null || id != null,
@@ -151,8 +152,7 @@ mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
       ${[
       'query',
       'aggregate',
-      if (searchOptions != null && searchOptions.filters != null)
-        '(${searchOptions.paramTypes})',
+      if (searchOptions != null && searchOptions.filters != null) '(${searchOptions.paramTypes})',
     ].join(' ')} {
       ${GraphQLQueryBuilder.count(
       tableName: table,
@@ -165,9 +165,8 @@ mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
       GraphQLQueryOptions(
         document: GraphQLQueryConverter.toDocumentNode(query),
         fetchPolicy: fetchPolicy,
-        variables: (searchOptions?.filters != null)
-            ? searchOptions!.filtersOf
-            : const <String, dynamic>{},
+        variables:
+            (searchOptions?.filters != null) ? searchOptions!.filtersOf : const <String, dynamic>{},
         parserFn: (Map<String, dynamic>? data) {
           return data!['${table}_aggregate']['aggregate']['count'] as int;
         },
@@ -243,9 +242,8 @@ mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
           ),
         ),
         fetchPolicy: fetchPolicy,
-        variables: (searchOptions?.filters != null)
-            ? searchOptions!.filtersOf
-            : const <String, dynamic>{},
+        variables:
+            (searchOptions?.filters != null) ? searchOptions!.filtersOf : const <String, dynamic>{},
         parserFn: (Map<String, dynamic>? data) {
           if (data?[table] == null) return [];
 
@@ -277,9 +275,8 @@ mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
           ),
         ),
         fetchPolicy: fetchPolicy,
-        variables: (searchOptions?.filters != null)
-            ? searchOptions!.filtersOf
-            : const <String, dynamic>{},
+        variables:
+            (searchOptions?.filters != null) ? searchOptions!.filtersOf : const <String, dynamic>{},
         parserFn: (Map<String, dynamic>? data) {
           if (data?[table] == null) return GraphQLPaginatedList.empty();
 
@@ -343,9 +340,8 @@ mixin GraphQLTableDataResolver<IdType extends GraphQLBaseId, Model>
         ),
       ),
       fetchPolicy: fetchPolicy,
-      variables: (searchOptions?.filters != null)
-          ? searchOptions!.filtersOf
-          : const <String, dynamic>{},
+      variables:
+          (searchOptions?.filters != null) ? searchOptions!.filtersOf : const <String, dynamic>{},
       parserFn: (Map<String, dynamic>? data) {
         if (data?[table] == null) return [];
 
