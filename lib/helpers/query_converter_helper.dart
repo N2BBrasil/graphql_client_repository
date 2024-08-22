@@ -2,22 +2,21 @@ import 'package:gql/ast.dart' as ast;
 import 'package:gql/language.dart' as lang;
 
 class GraphQLQueryConverter {
-  static ast.DocumentNode toDocumentNode(String query) =>
-      lang.parseString(query);
+  static ast.DocumentNode toDocumentNode(String query) => lang.parseString(query);
 
   static Map<String, dynamic> prepareNestedProperties(
     Map<String, dynamic> json,
   ) {
     convertListStringToString(json);
+
     for (final element in json.keys) {
       if (json[element] is List<Map>) {
         json[element] = <String, dynamic>{
-          'data': json[element]
-              .map(
-                (Map<String, dynamic> nested) =>
-                    prepareNestedProperties(nested),
-              )
-              .toList(),
+          'data': json[element].map(
+            (Map<String, dynamic> nested) {
+              return prepareNestedProperties(nested);
+            },
+          ).toList(),
         };
       }
     }

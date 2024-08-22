@@ -13,8 +13,7 @@ class GraphQLQueryBuilder {
         ${[
       operation.name,
       'list_$tableName',
-      if (searchOptions != null && searchOptions.hasFilters)
-        '(${searchOptions.paramTypes})',
+      if (searchOptions != null && searchOptions.hasFilters) '(${searchOptions.paramTypes})',
     ].join(' ')} {
       ${aggregate ?? ''}
       ${[
@@ -22,8 +21,7 @@ class GraphQLQueryBuilder {
       if (searchOptions != null) ...[
         '(',
         [
-          if (searchOptions.hasFilters)
-            'where: { ${searchOptions.operations} }',
+          if (searchOptions.hasFilters) 'where: { ${searchOptions.operations} }',
           if (searchOptions.orderBy != null)
             'order_by: { ${searchOptions.orderBy?.field}: ${searchOptions.orderBy?.value} }',
           if (searchOptions.limit != null) 'limit: ${searchOptions.limit}',
@@ -48,8 +46,7 @@ class GraphQLQueryBuilder {
       if (searchOptions != null) ...[
         '(',
         [
-          if (searchOptions.hasFilters)
-            'where: { ${searchOptions.operations} }',
+          if (searchOptions.hasFilters) 'where: { ${searchOptions.operations} }',
           if (searchOptions.orderBy != null)
             'order_by: { ${searchOptions.orderBy?.field}: ${searchOptions.orderBy?.value} }',
         ].join(','),
