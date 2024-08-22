@@ -18,6 +18,11 @@ class GraphQLSearchOptions {
   String get paramTypes => filters!.map((e) => e.paramType).join(',');
 
   Map<String, dynamic> get filtersOf {
+    return filters?.map((e) => e.variables).reduce((value, element) => value..addAll(element)) ??
+        {};
+  }
+
+  Map<String, dynamic> get filtersOf2 {
     return {
       for (final filter in filters!) filter.name: filter.value,
     };
