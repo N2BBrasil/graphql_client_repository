@@ -6,10 +6,8 @@ import 'package:http/http.dart' as http;
 
 typedef TokenHandler = FutureOr<String?> Function();
 typedef GraphQLQueryOptions<TParsed extends Object?> = QueryOptions<TParsed>;
-typedef GraphQLMutationOptions<TParsed extends Object?>
-    = MutationOptions<TParsed>;
-typedef GraphQLSubscriptionOptions<TParsed extends Object?>
-    = SubscriptionOptions<TParsed>;
+typedef GraphQLMutationOptions<TParsed extends Object?> = MutationOptions<TParsed>;
+typedef GraphQLSubscriptionOptions<TParsed extends Object?> = SubscriptionOptions<TParsed>;
 typedef GraphQLFetchPolicy = FetchPolicy;
 typedef GraphQLCacheRereadPolicy = CacheRereadPolicy;
 typedef GraphQLQueryResult<T> = QueryResult<T>;
@@ -22,6 +20,8 @@ class GraphQLRepositoryClient extends GraphQLClient {
     dynamic initSocketPayload,
     Map<String, String> defaultHttpHeaders = const {},
     http.Client? client,
+    Duration? queryRequestTimeout,
+    DefaultPolicies? defaultPolicies,
   })  : assert(
           !url.contains('https://') || !url.contains('wss://'),
           'url should not contain https:// or wss://',
@@ -51,10 +51,12 @@ class GraphQLRepositoryClient extends GraphQLClient {
               ),
             ),
           ),
-          defaultPolicies: DefaultPolicies(
-            query: Policies(fetch: FetchPolicy.noCache),
-            mutate: Policies(fetch: FetchPolicy.noCache),
-          ),
+          defaultPolicies: defaultPolicies ??
+              DefaultPolicies(
+                query: Policies(fetch: FetchPolicy.noCache),
+                mutate: Policies(fetch: FetchPolicy.noCache),
+              ),
           cache: GraphQLCache(partialDataPolicy: PartialDataCachePolicy.accept),
+          queryRequestTimeout: queryRequestTimeout,
         );
 }
